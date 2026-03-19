@@ -1,0 +1,76 @@
+# Example device profile — copy this file and rename it to match your device
+# e.g., mac.yml, windows-desktop.yml, linux-server.yml
+
+name: my-device
+hostname: my-hostname
+os: macOS / Windows 11 / Ubuntu 24.04
+last_seen: "2026-03-19"
+status: online
+
+# Hardware — helps Claude decide where to run heavy tasks
+hardware:
+  cpu: Apple M2 Pro / Intel i9 / AMD Ryzen 9
+  ram: 32 GB
+  gpu: NVIDIA RTX 4090 (24GB VRAM)  # or "None / Integrated"
+  cuda: "12.1"  # omit if no NVIDIA GPU
+  drives:
+    main: "1 TB SSD (500 GB free)"
+
+# Programming languages & runtimes installed
+languages:
+  - name: Python 3.12
+    path: /usr/local/bin/python3
+    notes: "Primary Python install"
+  - name: Node.js v22
+    npm: "10.x"
+  - name: Go 1.22
+  - name: Rust 1.85
+  # Add whatever you have — Ruby, Java, .NET, etc.
+
+# Development tools
+dev_tools:
+  - name: Git
+  - name: GitHub CLI (gh)
+  - name: Docker Desktop
+  - name: VS Code
+  - name: Xcode  # macOS only
+  # Add your IDEs, build tools, etc.
+
+# Domain-specific software — the interesting stuff
+tools:
+  - name: ffmpeg
+    notes: "Video/audio processing"
+  - name: Blender
+    notes: "3D modelling, scripted via Python"
+  - name: Playwright
+    notes: "Browser automation"
+  # Whatever makes this machine special
+
+# Key Python packages (just the notable ones)
+python_packages:
+  - pytorch 2.x (GPU-accelerated)
+  - transformers
+  - flask
+  - pandas / numpy / scipy
+
+# Projects that live on this machine
+projects:
+  - name: My Web App
+    path: ~/Projects/webapp
+    notes: "Next.js frontend + Express API"
+  - name: ML Pipeline
+    path: ~/Projects/ml-pipeline
+    notes: "Training runs happen here"
+
+# What this device excels at — Claude reads these to route tasks
+strengths:
+  - "GPU-accelerated ML training and inference"
+  - "iOS/macOS development (Xcode)"
+  - "Video processing (ffmpeg + GPU encoding)"
+  - "Docker-based deployments"
+
+# What this device can't or shouldn't do
+weaknesses:
+  - "No Windows-specific tools (e.g., ArcGIS Pro)"
+  - "Limited disk space"
+  - "No .NET runtime"
