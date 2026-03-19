@@ -146,7 +146,7 @@ The relay and watcher should run as background services that survive reboots.
 bash scripts/setup-launchd.sh
 ```
 
-**Windows (Scheduled Tasks):**
+**Windows (Scheduled Tasks) — run as Administrator:**
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\setup-scheduled-task.ps1
 ```
@@ -294,6 +294,24 @@ Set the PATH in your launch agent / scheduled task, or set `CLAUDE_BIN` in the w
 **Cause:** Passing the prompt as a CLI argument (`claude -p "..."`) has shell escaping issues on Windows.
 
 **Fix:** Already handled — the watcher pipes the prompt via stdin instead of CLI arguments. Make sure you're on the latest watcher.py.
+
+### Quick verification test
+
+After setup, run this to confirm everything works end-to-end:
+
+```bash
+# On Device A — send a test prompt to Device B
+python relay/bridge.py prompt "Reply with: BRIDGE WORKING from [your device name]"
+
+# Wait ~15 seconds, then check for the response
+python relay/bridge.py read
+```
+
+If you get a response back, the autonomous loop is working.
+
+### Security note
+
+The relay server uses plain HTTP with no authentication. It is designed for **trusted local networks** (direct ethernet, home LAN). Do not expose port 9111 to the public internet without adding authentication and TLS.
 
 ### When to use what
 
