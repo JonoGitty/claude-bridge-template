@@ -1,0 +1,8 @@
+# Relay runtime files
+relay/inbox/
+relay/*.log
+relay/.processed
+
+# OS files
+.DS_Store
+Thumbs.db
