@@ -74,3 +74,17 @@ weaknesses:
   - "No Windows-specific tools (e.g., ArcGIS Pro)"
   - "Limited disk space"
   - "No .NET runtime"
+
+# Network — how this device connects to others
+# Helps Claude decide between direct transfer vs Git-based messaging
+network:
+  wifi:
+    interface: en1
+    ip: 192.168.0.100
+    network: home LAN
+  ethernet:  # optional — only if directly cabled to another device
+    interface: en0
+    ip: 169.254.x.x
+    link: "Direct ethernet cable to other-device.local"
+    peer_ip: 169.254.x.x
+    notes: "Link-local direct connection — sub-ms latency"

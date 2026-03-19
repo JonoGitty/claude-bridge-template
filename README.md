@@ -195,6 +195,68 @@ The `CLAUDE.md` file contains the full protocol instructions that Claude Code re
 
 ---
 
+## Connecting Your Devices
+
+The bridge communicates via Git (push/pull through GitHub), but your devices can also be connected directly for faster file transfers, SSH access, or local networking.
+
+### Direct Ethernet (Simplest)
+
+Plug an ethernet cable directly between two machines. No router or switch needed — they'll auto-assign link-local addresses (`169.254.x.x`) and discover each other via mDNS.
+
+**Setup:**
+1. Connect an ethernet cable between the two machines
+2. Wait ~10 seconds for link-local addresses to be assigned
+3. Find each other by hostname:
+   ```bash
+   # From Mac, find the other machine:
+   ping my-windows-pc.local
+
+   # From Windows, find the Mac:
+   ping my-mac.local
+   ```
+4. Or check the ARP table to see connected devices:
+   ```bash
+   arp -a
+   ```
+
+**Add network info to device profiles:**
+```yaml
+network:
+  ethernet:
+    interface: en0           # macOS — check with `ifconfig`
+    ip: 169.254.x.x         # auto-assigned link-local address
+    link: "Direct ethernet cable to other-device.local"
+    peer_ip: 169.254.x.x    # the other machine's link-local address
+    notes: "Link-local direct connection — no router needed, sub-ms latency"
+```
+
+This is useful for:
+- SSH access between machines (`ssh user@other-device.local`)
+- Fast file transfers (`scp`, `rsync`) without going through the internet
+- Claude Code on one machine running commands on the other via SSH
+- Network-based routing decisions (e.g. "these machines are co-located, use direct transfer instead of Git for large files")
+
+### Same Wi-Fi / LAN
+
+If both machines are on the same local network, they can reach each other by IP or hostname without any extra setup. Add the local IP to your device profiles so Claude knows they can communicate directly.
+
+### Remote / Different Networks
+
+If your machines are on different networks (e.g. home desktop + work laptop), the Git-based message protocol is your communication channel. Everything works the same — it just goes through GitHub instead of a direct connection.
+
+### Using with Claude Desktop (Cowork + Dispatch)
+
+If you have the [Claude Desktop app](https://claude.ai/download) on one of your machines, you can use **Cowork** (background agent mode) with **Dispatch** (remote task sending). This means:
+
+- Your always-on machine can run Claude Desktop in Cowork mode as a persistent background agent
+- You can send tasks to it remotely via Dispatch from your phone or another device
+- Cowork can read the bridge repo to understand which machine to route work to
+- Combined with a direct ethernet link, Cowork can even trigger Claude Code sessions on the connected machine
+
+This turns the bridge from a passive message board into an active routing system — Cowork reads the device profiles, decides where the task should run, and either handles it locally or delegates.
+
+---
+
 ## Tips
 
 - **Keep profiles up to date.** When you install new software or start new projects, update the YAML.
@@ -202,6 +264,7 @@ The `CLAUDE.md` file contains the full protocol instructions that Claude Code re
 - **Archive regularly.** Move completed messages to `messages/archive/` so the inbox stays scannable.
 - **More than 2 devices?** Works fine — just add more device profiles. Messages use `from`/`to` fields so routing stays clear.
 - **Disk space, hardware info matters.** Including things like available disk space or GPU specs helps Claude make better routing decisions (e.g. "don't send ML training to the machine with 8GB RAM").
+- **Add network info.** If your devices are directly connected or on the same LAN, add their IPs to the device profiles so Claude can use direct transfers when appropriate.
 
 ---
 
